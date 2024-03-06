@@ -1,0 +1,59 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn install
+
+PATH: 
+  /Users/jwpeter/Library/Android/sdk/platform-tools:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Users/jwpeter/Library/Android/sdk/platform-tools:/Library/Frameworks/Python.framework/Versions/3.10/bin
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  16.17.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: certificate has expired
+      at TLSSocket.onConnectSecure (node:_tls_wrap:1535:34)
+      at TLSSocket.emit (node:events:513:28)
+      at TLSSocket._finishInit (node:_tls_wrap:949:8)
+      at TLSWrap.ssl.onhandshakedone (node:_tls_wrap:730:12)
+
+npm manifest: 
+  {
+    "name": "frontend-challenge",
+    "private": true,
+    "version": "0.2.0",
+    "type": "module",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+      "preview": "vite preview"
+    },
+    "dependencies": {
+      "antd": "^5.15.0",
+      "axios": "^1.6.7",
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0",
+      "typescript": "^5.3.3"
+    },
+    "devDependencies": {
+      "@types/react": "^18.2.18",
+      "@types/react-dom": "^18.2.7",
+      "@vitejs/plugin-react": "^4.0.4",
+      "eslint": "^8.46.0",
+      "eslint-plugin-react": "^7.33.1",
+      "eslint-plugin-react-hooks": "^4.6.0",
+      "eslint-plugin-react-refresh": "^0.4.3",
+      "vite": "^4.4.9"
+    },
+    "packageManager": "yarn@3.6.3"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
