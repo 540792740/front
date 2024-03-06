@@ -5,12 +5,12 @@ export const useFetchWithState = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchData = async (url) => {
+  const fetchData = async (url, param) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, param);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

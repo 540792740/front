@@ -12,7 +12,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # This route intentionally fails with CORS error on frontend
 @app.route('/')
-@app.route('/api/test-cors-error')
+@app.route('/test-cors-error')
 def cors_error():
 		return make_response(
 				"This should throw a CORS error for frontend, " + 
@@ -36,9 +36,10 @@ def succeed_with_delay():
 # If the method is not GET, this route throws a 405 error
 @app.route('/api/test-method-not-allowed', methods=['POST'])
 def method_not_allowed():
-		abort(405)
-		return make_response("This should throw a 405 error")
-
+    if request.method == 'POST':
+        return "Received POST request successfully" # post return true
+    else:
+        return make_response("Method Not Allowed", 405) # return 405
 
 # This route is for testing JSON ingestion and related errors
 @app.route('/api/input-test', methods=['POST'])

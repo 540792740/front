@@ -3,10 +3,10 @@ import { useFetchWithState } from "./FetchHook"
 
 export const EmptyJSONErrorButton = () => {
 
-    const {fetch} = useFetchWithState()
+    const { fetch } = useFetchWithState()
 
     const handleClick = () => {
-        fetch(`${apiUrl}/input-test`, {method: "POST"})
+        fetch(`${apiUrl}/input-test`)
     }
 
     return (

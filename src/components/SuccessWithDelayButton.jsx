@@ -9,7 +9,6 @@ export const SuccessWithDelayButton = () => {
 
     const handleClick = async () => {
         setIsProcessing(true); // 在点击按钮时设置状态为处理中
-
         // 发起请求
         try {
             await fetch(`${apiUrl}/succeed-with-delay`);
@@ -20,5 +19,5 @@ export const SuccessWithDelayButton = () => {
         }
     }
 
-    return <button onClick={handleClick} disabled={isProcessing}>FIXME: Always succeed with delay button</button> 
+    return <button onClick={handleClick} disabled={isProcessing}>FIXME: Always succeed with delay button</button>
 }

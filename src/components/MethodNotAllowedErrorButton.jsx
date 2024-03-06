@@ -3,10 +3,10 @@ import { useFetchWithState } from "./FetchHook"
 
 export const MethodNotAllowedErrorButton = () => {
 
-    const {fetch} = useFetchWithState()
+    const { fetch } = useFetchWithState()
 
     const handleClick = () => {
-        fetch(`${apiUrl}/test-method-not-allowed`)
+        fetch(`${apiUrl}/test-method-not-allowed`, { method: 'POST' })
     }
 
     return (
