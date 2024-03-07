@@ -8,10 +8,12 @@ import { DataInput } from "./DataInput"
 import { FixServerErrorButton } from "./FixServerErrorButton"
 import { SuccessWithDelayButton } from "./SuccessWithDelayButton"
 import { SometimesFailedButton } from "./SometimesFailedButton"
+import RightSidebar from "./rightSidebar"
 
 export const MainPage = () => {
 	return (
 		<div>
+			<RightSidebar />
 			<h1>Frontend Design Challenge</h1>
 			<h6>For all button click events and their results (except frontend crash button), add to a side panel</h6>
 			<CORSErrorButton />

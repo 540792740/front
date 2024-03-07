@@ -1,0 +1,50 @@
+@import '@/globalStyle.scss';
+
+.open-button-container {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 999;
+
+  .open-button {
+    transition: all 0.3s ease;
+  }
+
+  .open-button:hover {
+    transform: scale(1.1);
+  }
+
+  .open {
+    width: 120px;
+  }
+
+  .closed {
+    width: 40px;
+  }
+}
+
+.collapse-header-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.error-box-container {
+  background-color: $basic_error_background;
+  border-radius: 8px;
+  border: 1px solid $basic_error_border;
+
+  &:hover {
+    box-shadow: 0 0 10px $basic_error_border;
+  }
+}
+
+.success-box-container {
+  background-color: $basic_success_background;
+  border-radius: 8px;
+  border: 1px solid $basic_success_border;
+
+  &:hover {
+    box-shadow: 0 0 10px $basic_success_border;
+  }
+}
