@@ -2,7 +2,6 @@ from http import HTTPStatus
 import time
 import random
 import threading
-
 from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 
@@ -44,31 +43,31 @@ def method_not_allowed():
 # This route is for testing JSON ingestion and related errors
 @app.route('/api/input-test', methods=['POST'])
 def input_test():
-		# If there is no json, this route is intentionally set to throw a 400 error without a response body
-		posted_data = request.get_json()
+    # If there is no json, this route is intentionally set to throw a 400 error without a response body
+    posted_data = request.get_json()
 
-		# If there is no key called 'data', this route intentionally throws a 422 error as it's precondition is missing
-		try:
-				print(f"Using an input of {str(posted_data['data'])}")
-		except KeyError as e:
-				return jsonify(
-						route="/input-test",
-						method="POST",
-						timestamp=time.time(),
-						message=str(e),
-						result="failed"
-				), HTTPStatus.UNPROCESSABLE_ENTITY
+    # If there is no key called 'data', this route intentionally throws a 422 error as it's precondition is missing
+    try:
+        print(f"Using an input of {str(posted_data['data'])}")
+    except KeyError as e:
+        return jsonify(
+            route="/input-test",
+            method="POST",
+            timestamp=time.time(),
+            message=str(e),
+            result="failed"
+        ), HTTPStatus.UNPROCESSABLE_ENTITY
 
-		# If the entered data is not a number this route intentionally throws a 5xx error without a response body
-		result = posted_data['data'] * posted_data['data']
+    # If the entered data is not a number this route intentionally throws a 5xx error without a response body
+    result = posted_data['data'] * posted_data['data']
 
-		return jsonify(
-				route="/input-test",
-				method="POST",
-				timestamp=time.time(),
-				message=f"Processed input: {posted_data['data']}",
-				result="succeeded"
-		)
+    return jsonify(
+        route="/input-test",
+        method="POST",
+        timestamp=time.time(),
+        message=f"Processed input: {posted_data['data']}",
+        result="succeeded"
+    )
 
 
 # This route is for testing JSON response processing

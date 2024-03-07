@@ -10,7 +10,12 @@ export const useFetchWithState = () => {
     setError(null);
 
     try {
-      const response = await fetch(url, param);
+      const response = await fetch(url, {
+        ...param,
+        headers: {
+          'Content-Type': 'application/json' // 设置Content-Type为application/json
+        },
+      });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
