@@ -14,7 +14,7 @@ export const useFetchWithState = () => {
       const response = await fetch(url, {
         ...param,
         headers: {
-          'Content-Type': 'application/json' // 设置Content-Type为application/json
+          'Content-Type': 'application/json' // set Content-Type to application/json
         },
       });
       if (!response.ok) {

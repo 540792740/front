@@ -1,18 +1,29 @@
-import React, { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Drawer, Button, Timeline } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import './index.scss';
 import useStores from '@/hooks/useStores'
 import MessageCard from './components/messageCard';
 import { MessageListModel } from '@/stores/serviceMessageStore';
+import { apiUrl } from '@/apiUrl.js'
+import { useFetchWithState } from "@/components/FetchHook.jsx"
+import { getTimeStamp } from '@/utils/general';
 
-const RightSidebar: React.FC = () => {
+let interval;
+export const RightSidebar = () => {
   const [visible, setVisible] = useState<boolean>(false); // drawer visible
   const { ServiceMessageStore } = useStores()
+  const { fetch } = useFetchWithState()
 
   const toggleDrawer = () => {
     setVisible(!visible);
   };
+
+  // close drawer and clear the interval
+  const onCloseHandler = () => {
+    clearInterval(interval)
+    toggleDrawer()
+  }
 
   // time line data
   const cardList = () => useMemo(() => {
@@ -22,6 +33,16 @@ const RightSidebar: React.FC = () => {
     });
     return tempList;
   }, [ServiceMessageStore.messageList])
+
+  // 打开获取错误数据
+  useEffect(() => {
+    if (visible) {
+      interval = setInterval(() => {
+        fetch(`${apiUrl}/error`)
+      }, 3000);
+    }
+  }, [visible])
+
   return (
     <>
       <Button
@@ -36,8 +57,9 @@ const RightSidebar: React.FC = () => {
         title="Drawer"
         placement="right"
         closable={false}
-        onClose={toggleDrawer}
+        onClose={onCloseHandler}
         open={visible}
+        className='right-drawer-container'
       >
         <Timeline items={cardList()} />
         <div className="menu">
