@@ -27,22 +27,54 @@
 .collapse-header-container {
   display: flex;
   justify-content: space-between;
+  color: rgb(255, 255, 255, .8);
 }
 
+.ant-collapse {
+  border-color: rgb(255, 255, 255, .5);
+  font-weight: 500;
+
+  .ant-collapse-content {
+    color: rgb(255, 255, 255, .8);
+  }
+
+  &:hover {
+
+    .ant-collapse-content,
+    .collapse-header-container {
+      color: rgb(255, 255, 255) !important;
+    }
+  }
+
+  svg {
+    fill: white
+  }
+}
+
+// error card style
 .error-box-container {
   background-color: $basic_error_background;
   border-radius: 8px;
   border: 1px solid $basic_error_border;
+
+  .ant-collapse-content {
+    background: $basic_error_background;
+  }
 
   &:hover {
     box-shadow: 0 0 10px $basic_error_border;
   }
 }
 
+// success card style
 .success-box-container {
   background-color: $basic_success_background;
   border-radius: 8px;
   border: 1px solid $basic_success_border;
+
+  .ant-collapse-content {
+    background: $basic_success_background;
+  }
 
   &:hover {
     box-shadow: 0 0 10px $basic_success_border;
