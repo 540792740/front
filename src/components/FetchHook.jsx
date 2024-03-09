@@ -26,7 +26,7 @@ export const useFetchWithState = () => {
         }
       } else {
         const result = await response.json();
-        setData(result);
+        setData(result.data);
       }
     } catch (error) {
       setError(error.message);

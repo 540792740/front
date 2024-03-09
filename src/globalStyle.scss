@@ -1,4 +1,14 @@
-$basic_error_background: #cf1322;
-$basic_error_border: #d9363e;
-$basic_success_background: #7cb305;
-$basic_success_border: #52c41a;
+ $basic_error_background: #cf1322;
+ $basic_error_border: #d9363e;
+ $basic_success_background: #7cb305;
+ $basic_success_border: #52c41a;
+
+
+ //  dark
+ $basic_font_color_dark: rgba(255, 255, 255, 0.87);
+ $basic_background_dark: #242424;
+
+
+ // light
+ $basic_font_color_light: #213547;
+ $basic_background_light: #ffffff;

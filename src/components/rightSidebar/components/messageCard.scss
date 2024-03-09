@@ -1,55 +1,11 @@
 @import '@/globalStyle.scss';
 
-.open-button-container {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  z-index: 999;
-
-  .open-button {
-    transition: all 0.3s ease;
-  }
-
-  .open-button:hover {
-    transform: scale(1.1);
-  }
-
-  .open {
-    width: 120px;
-  }
-
-  .closed {
-    width: 40px;
-  }
-}
-
 .collapse-header-container {
   display: flex;
   justify-content: space-between;
   color: rgb(255, 255, 255, .8);
 }
 
-.ant-collapse {
-  border-color: rgb(255, 255, 255, .5);
-  font-weight: 500;
-
-  .ant-collapse-content {
-    color: rgb(255, 255, 255, .8);
-  }
-
-  &:hover {
-
-    .ant-collapse-content,
-    .collapse-header-container {
-      color: rgb(255, 255, 255) !important;
-    }
-  }
-
-  svg {
-    fill: white
-  }
-}
 
 // error card style
 .error-box-container {
@@ -78,5 +34,32 @@
 
   &:hover {
     box-shadow: 0 0 10px $basic_success_border;
+  }
+}
+
+.ant-collapse {
+  color: $basic_font_color_light;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ant-collapse {
+    border-color: rgb(255, 255, 255, .5);
+    font-weight: 500;
+
+    .ant-collapse-content {
+      color: rgb(255, 255, 255, .8);
+    }
+
+    &:hover {
+
+      .ant-collapse-content,
+      .collapse-header-container {
+        color: rgb(255, 255, 255) !important;
+      }
+    }
+
+    svg {
+      fill: $basic_font_color_dark
+    }
   }
 }

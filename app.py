@@ -159,7 +159,7 @@ def after_request(resp, *args, **kwargs):  # 请求处理结束后 钩子函数
 
 
 
-@app.route('/api/error', methods=["GET"])
+@app.route('/api/errors', methods=["GET"])
 def get_error():
     # message 搜索字段 page page_size
     message = request.args.to_dict().get("message", None)
