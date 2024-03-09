@@ -5,11 +5,6 @@
   border-radius: 5px;
 }
 
-.menu {
-  padding: 16px;
-  color: black;
-}
-
 .open-button-container {
   position: fixed;
   top: 50%;
@@ -36,5 +31,16 @@
 }
 
 .right-drawer-container {
-  background-color: #d2e0fa !important;
+  color: white;
+  background-color: #242424 !important;
+
+  .ant-drawer-title {
+    color: white;
+  }
+
+  .ant-timeline {
+    .ant-timeline-item-tail {
+      border-color: white;
+    }
+  }
 }
