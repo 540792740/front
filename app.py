@@ -35,12 +35,27 @@ def succeed_with_delay():
 
 
 # If the method is not GET, this route throws a 405 error
-@app.route('/api/test-method-not-allowed', methods=['POST'])
+@app.route('/api/test-method-not-allowed', methods=['GET','POST'])
 def method_not_allowed():
-    if request.method == 'POST':
-        return "Received POST request successfully"  # post return true
+    method,route,timestamp = request.method,"/api/test-method-not-allowed",time.time()
+    if method == 'POST':
+        # return "Received POST request successfully"  # post return true
+        return jsonify(
+            route=route,
+            method=method,
+            timestamp=timestamp,
+            message="POST RETURN TRUE",
+            result="succeeded"
+        )  # post return true
     else:
-        return make_response("Method Not Allowed", 405)  # return 405
+        # return make_response("Method Not Allowed", 405)  # return 405
+        return jsonify(
+            route=route,
+            method=method,
+            timestamp=timestamp,
+            message="Method Not Allowed",
+            result="failed"
+        ) , 405
 
 
 # This route is for testing JSON ingestion and related errors
@@ -48,7 +63,6 @@ def method_not_allowed():
 def input_test():
     # If there is no json, this route is intentionally set to throw a 400 error without a response body
     posted_data = request.get_json()
-
     # If there is no key called 'data', this route intentionally throws a 422 error as it's precondition is missing
     try:
         print(f"Using an input of {str(posted_data['data'])}")
@@ -123,61 +137,61 @@ def failing_thread():
                 route='',
                 method='',
                 timestamp=time.time(),
-                message="This is a random recurrent error",
-                status=f"Loop failed with error {hex(error)}"
+                message=f"This is a random recurrent error {hex(error)}",
+                # status=f"Loop failed with error {hex(error)}"
+                status=f"failed"
             )
         )
+
 
 thread = threading.Thread(target=failing_thread, daemon=True)
 thread.start()
 
+@app.errorhandler(Exception)
+def error_handler(e):
+    route, method, timestamp = request.path, request.method, time.time()
+    error_data = dict(
+        route=route,
+        method=method,
+        timestamp=timestamp,
+        message=str(e),
+        status='failed'
+    )
+    resp = ResponseBase(json.dumps(dict(error_data), ensure_ascii=False), 400, mimetype='application/json')
+    return resp
+
 @app.after_request
 def after_request(resp, *args, **kwargs):  # 请求处理结束后 钩子函数
-    route = str(request.url_rule)
-    method = request.method
-    if method == 'OPTIONS':
+    route, method, timestamp, message = request.path, request.method, time.time(), ''
+    if method == 'OPTIONS':  # filter options request
         return resp
     if str(resp.status) == "200 OK":
-        status = 'success'
+        status = 'succeeded'
     else:
         status = 'failed'
-    timestamp = time.time()
-    message = ''
-    if resp.json and 'message' in resp.json:
-        message = resp.json.get('message', '')
-        timestamp = resp.json.get('timestamp', '')
+    if resp.json:
+        if 'message' in resp.json: message = resp.json.get('message', '')
+        if 'timestamp' in resp.json: timestamp = resp.json.get('timestamp', '')
     errors.append(
-        dict(
-            route=route,
-            method=method,
-            timestamp=timestamp,
-            message=message,
-            status=status
-        )
+        dict(route=route, method=method, timestamp=timestamp, message=message, status=status)
     )
     return resp
 
 
-
 @app.route('/api/errors', methods=["GET"])
 def get_error():
-    # message 搜索字段 page page_size
     message = request.args.to_dict().get("message", None)
+    new_errors = errors
     if message:
         new_errors = []
         for error in errors:
-            if message in error['message']:
-                new_errors.append(error)
-    else:
-        new_errors = errors
+            if message in error['message']: new_errors.append(error)
     page = int(request.args.to_dict().get("page", 1))
     page_size = int(request.args.to_dict().get("page_size", 10))
-    new_errors = sorted(new_errors, key=lambda x: x['timestamp'], reverse=True)
-    new_errors = new_errors[((page - 1) * page_size):]
-    if len(new_errors) <= page_size:
-        return jsonify(data=new_errors)
-    else:
-        return jsonify(data=new_errors[:page_size])
+    new_errors = sorted(new_errors, key=lambda x: x['timestamp'], reverse=True)  # timestamp sort
+    new_errors = new_errors[((page - 1) * page_size):][:page_size]  # page slice
+    for line in new_errors: line['timestamp'] = int(line['timestamp'])
+    return jsonify(data=new_errors)
 
 
 
