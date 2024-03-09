@@ -10,7 +10,6 @@ export const getStatusColor = (status: StatusType) => {
       return 'success-box-container'
   }
 }
-
-export const getTimeStamp = (timeStamp: string) => {
-  return dayjs().format(timeStamp)
+export const getTimeStamp = (timeStamp: number) => {
+  return dayjs.unix(timeStamp).format('YYYY-MM-DD HH:mm:ss'); // Convert timeStamp to format: year-month-day hour:minute:second
 }

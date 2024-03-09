@@ -7,13 +7,12 @@ import MessageCard from './components/messageCard';
 import { MessageListModel } from '@/stores/serviceMessageStore';
 import { apiUrl } from '@/apiUrl.js'
 import { useFetchWithState } from "@/components/FetchHook.jsx"
-import { getTimeStamp } from '@/utils/general';
-
+import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
 let interval;
 export const RightSidebar = () => {
   const [visible, setVisible] = useState<boolean>(false); // drawer visible
   const { ServiceMessageStore } = useStores()
-  const { fetch } = useFetchWithState()
+  const { fetch, data } = useFetchWithState()
 
   const toggleDrawer = () => {
     setVisible(!visible);
@@ -29,7 +28,10 @@ export const RightSidebar = () => {
   const cardList = () => useMemo(() => {
     const tempList = [];
     ServiceMessageStore.messageList.forEach((element: MessageListModel) => {
-      tempList.push({ children: <MessageCard responseDetails={element} /> })
+      tempList.push({
+        children: <MessageCard responseDetails={element} />,
+        dot: element.status === 'succeeded' ? <CheckCircleFilled style={{ color: '#7cb305', fontSize: '1.5em' }} /> : <CloseCircleFilled style={{ color: '#cf1322', fontSize: '1.5em' }} />,
+      })
     });
     return tempList;
   }, [ServiceMessageStore.messageList])
@@ -37,11 +39,16 @@ export const RightSidebar = () => {
   // 打开获取错误数据
   useEffect(() => {
     if (visible) {
-      interval = setInterval(() => {
-        fetch(`${apiUrl}/error`)
-      }, 3000);
+      fetch(`${apiUrl}/errors`)
     }
   }, [visible])
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      ServiceMessageStore.setMessageList(data)
+    }
+  }, [data])
+
 
   return (
     <>
@@ -59,6 +66,7 @@ export const RightSidebar = () => {
         closable={false}
         onClose={onCloseHandler}
         open={visible}
+        mask={false}
         className='right-drawer-container'
       >
         <Timeline items={cardList()} />

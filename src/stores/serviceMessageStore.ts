@@ -1,18 +1,20 @@
 import { makeAutoObservable } from 'mobx';
 
-export type StatusType = 'success' | 'failed';
+export type StatusType = 'succeeded' | 'failed';
 
 // List Data Structure
 export interface MessageListModel {
   message: string,
-  routerPath: string,
+  route: string,
   status: StatusType
+  method: "GET" | "POST" | 'PUT' | 'DELETE'
+  timestamp: number
 }
 class ServiceMessageStore {
 
   private _messageList: MessageListModel[] = [
-    { message: 'new', routerPath: '/text-test', status: 'success' },
-    { message: 'error', routerPath: '/text-test', status: 'failed' },
+    { message: 'new', route: '/text-test', status: 'succeeded', method: 'GET', timestamp: 2222 },
+    { message: 'error', route: '/text-test', status: 'failed', method: 'GET', timestamp: 2222 },
   ]; // error message list
 
   constructor() {

@@ -1,3 +1,5 @@
+@import '@/globalStyle.scss';
+
 .logo {
   height: 32px;
   margin: 16px auto;
@@ -27,20 +29,25 @@
   .closed {
     width: 40px;
   }
-
 }
 
-.right-drawer-container {
-  color: white;
-  background-color: #242424 !important;
+@media (prefers-color-scheme: dark) {
+  .right-drawer-container {
+    color: $basic_font_color_dark;
+    background-color: $basic_background_dark !important;
 
-  .ant-drawer-title {
-    color: white;
-  }
+    .ant-drawer-title {
+      color: $basic_font_color_dark;
+    }
 
-  .ant-timeline {
-    .ant-timeline-item-tail {
-      border-color: white;
+    .ant-timeline {
+      .ant-timeline-item-tail {
+        border-color: $basic_font_color_dark;
+      }
+
+      .ant-timeline-item-head {
+        background-color: $basic_background_dark !important;
+      }
     }
   }
 }
