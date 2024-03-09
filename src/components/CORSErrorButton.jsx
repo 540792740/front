@@ -5,7 +5,7 @@ export const CORSErrorButton = () => {
   const { fetch } = useFetchWithState()
 
   const handleClick = () => {
-    fetch(new URL(apiUrl).origin + "/test-cors-error")
+    fetch(new URL(apiUrl).origin + "/test-cors-error", { mode: 'no-cors' })
   }
 
   return (
