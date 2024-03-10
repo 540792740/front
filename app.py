@@ -35,27 +35,16 @@ def succeed_with_delay():
 
 
 # If the method is not GET, this route throws a 405 error
-@app.route('/api/test-method-not-allowed', methods=['GET','POST'])
+@app.route('/api/test-method-not-allowed', methods=['GET'])
 def method_not_allowed():
-    method,route,timestamp = request.method,"/api/test-method-not-allowed",time.time()
-    if method == 'POST':
-        # return "Received POST request successfully"  # post return true
-        return jsonify(
-            route=route,
-            method=method,
-            timestamp=timestamp,
-            message="POST RETURN TRUE",
-            result="succeeded"
-        )  # post return true
-    else:
-        # return make_response("Method Not Allowed", 405)  # return 405
-        return jsonify(
-            route=route,
-            method=method,
-            timestamp=timestamp,
-            message="Method Not Allowed",
-            result="failed"
-        ) , 405
+    method, route, timestamp = request.method, "/api/test-method-not-allowed", time.time()
+    return jsonify(
+        route=route,
+        method=method,
+        timestamp=timestamp,
+        message="GET RETURN TRUE",
+        result="succeeded"
+    )  # post return true
 
 
 # This route is for testing JSON ingestion and related errors
@@ -147,8 +136,23 @@ def failing_thread():
 thread = threading.Thread(target=failing_thread, daemon=True)
 thread.start()
 
+
+@app.errorhandler(405)
+def error_handler_405(e):
+    route, method, timestamp = request.path, request.method, time.time()
+    error_data = dict(
+        route=route,
+        method=method,
+        timestamp=timestamp,
+        message=str(e),
+        status='failed'
+    )
+    resp = ResponseBase(json.dumps(dict(error_data), ensure_ascii=False), 405, mimetype='application/json')
+    return resp
+
+
 @app.errorhandler(Exception)
-def error_handler(e):
+def error_handler_exception(e):
     route, method, timestamp = request.path, request.method, time.time()
     error_data = dict(
         route=route,
@@ -159,6 +163,7 @@ def error_handler(e):
     )
     resp = ResponseBase(json.dumps(dict(error_data), ensure_ascii=False), 400, mimetype='application/json')
     return resp
+
 
 @app.after_request
 def after_request(resp, *args, **kwargs):  # 请求处理结束后 钩子函数
@@ -192,8 +197,6 @@ def get_error():
     new_errors = new_errors[((page - 1) * page_size):][:page_size]  # page slice
     for line in new_errors: line['timestamp'] = int(line['timestamp'])
     return jsonify(data=new_errors)
-
-
 
 
 if __name__ == '__main__':
