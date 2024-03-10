@@ -13,9 +13,7 @@ export const useFetchWithState = () => {
     try {
       const response = await fetch(url, {
         ...param,
-        headers: {
-          'Content-Type': 'application/json' // set Content-Type to application/json
-        },
+        headers: { 'Content-Type': 'application/json' },
       });
       if (!response.ok) {
         if (response.status === 500) {
@@ -29,6 +27,7 @@ export const useFetchWithState = () => {
         setData(result.data);
       }
     } catch (error) {
+      message.error(error.message)
       setError(error.message);
     } finally {
       setLoading(false);

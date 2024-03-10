@@ -4,8 +4,12 @@
   display: flex;
   justify-content: space-between;
   color: rgb(255, 255, 255, .8);
-}
+  flex-direction: column;
 
+  .bold {
+    font-weight: bolder;
+  }
+}
 
 // error card style
 .error-box-container {
@@ -38,28 +42,27 @@
 }
 
 .ant-collapse {
-  color: $basic_font_color_light;
+
+  .ant-collapse-content {
+    color: rgb(255, 255, 255, .8);
+  }
+
+  &:hover {
+
+    .ant-collapse-content,
+    .collapse-header-container {
+      color: rgb(255, 255, 255) !important;
+    }
+  }
+
+  svg {
+    fill: $basic_font_color_dark
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   .ant-collapse {
     border-color: rgb(255, 255, 255, .5);
     font-weight: 500;
-
-    .ant-collapse-content {
-      color: rgb(255, 255, 255, .8);
-    }
-
-    &:hover {
-
-      .ant-collapse-content,
-      .collapse-header-container {
-        color: rgb(255, 255, 255) !important;
-      }
-    }
-
-    svg {
-      fill: $basic_font_color_dark
-    }
   }
 }

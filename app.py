@@ -10,7 +10,6 @@ from flask import Response as ResponseBase
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-
 # This route intentionally fails with CORS error on frontend
 @app.route('/')
 @app.route('/test-cors-error')
@@ -19,7 +18,6 @@ def cors_error():
         "This should throw a CORS error for frontend, " +
         "but when directly open the page it should show this string"
     )
-
 
 # This route returns 200 after a random delay
 @app.route('/api/succeed-with-delay')
@@ -33,14 +31,31 @@ def succeed_with_delay():
         result="succeeded"
     )
 
-
 # If the method is not GET, this route throws a 405 error
-@app.route('/api/test-method-not-allowed', methods=['POST'])
+@app.route('/api/test-method-not-allowed', methods=['GET'])
 def method_not_allowed():
-    if request.method == 'POST':
-        return "Received POST request successfully"  # post return true
-    else:
-        return make_response("Method Not Allowed", 405)  # return 405
+    method, route, timestamp = request.method, "/api/test-method-not-allowed", time.time()
+    return jsonify(
+        route=route,
+        method=method,
+        timestamp=timestamp,
+        message="GET RETURN TRUE",
+        result="succeeded"
+    )  # post return true
+
+# format 405 error response 
+@app.errorhandler(405)
+def error_handler_405(e):
+    route, method, timestamp = request.path, request.method, time.time()
+    error_data = dict(
+        route=route,
+        method=method,
+        timestamp=timestamp,
+        message=str(e),
+        status='failed'
+    )
+    resp = ResponseBase(json.dumps(dict(error_data), ensure_ascii=False), 405, mimetype='application/json')
+    return resp
 
 
 # This route is for testing JSON ingestion and related errors
@@ -59,6 +74,7 @@ def input_test():
             timestamp=time.time(),
             message=str(e),
             result="failed"
+            
         ), HTTPStatus.UNPROCESSABLE_ENTITY
 
     # If the entered data is not a number this route intentionally throws a 5xx error without a response body
@@ -116,15 +132,14 @@ def failing_thread():
     while True:
         time.sleep(random.randint(10, 30))  # Fail every 10 to 30 seconds
         error = random.randint(1, 500)  # Generate random error code
-
         # Generate a new random error
         errors.append(
             dict(
-                route='',
-                method='',
+                route='/mock-path',
+                method='GET',
                 timestamp=time.time(),
-                message="This is a random recurrent error",
-                status=f"Loop failed with error {hex(error)}"
+                message=f"This is a random recurrent error {hex(error)}",
+                status=f"failed"
             )
         )
 
@@ -132,55 +147,35 @@ thread = threading.Thread(target=failing_thread, daemon=True)
 thread.start()
 
 @app.after_request
-def after_request(resp, *args, **kwargs):  # 请求处理结束后 钩子函数
-    route = str(request.url_rule)
-    method = request.method
-    if method == 'OPTIONS':
+def after_request(resp): 
+    # save error into errors list
+    route, method, timestamp, message = request.path, request.method, time.time(), '' # default variable
+    if method == 'OPTIONS':  # filter options request
         return resp
     if str(resp.status) == "200 OK":
-        status = 'success'
+        status = 'succeeded'
+        message = '200 OK'
     else:
         status = 'failed'
-    timestamp = time.time()
-    message = ''
-    if resp.json and 'message' in resp.json:
-        message = resp.json.get('message', '')
-        timestamp = resp.json.get('timestamp', '')
+    if resp.json:
+        if 'message' in resp.json: message = resp.json.get('message', '')
+        if 'timestamp' in resp.json: timestamp = resp.json.get('timestamp', '')
     errors.append(
-        dict(
-            route=route,
-            method=method,
-            timestamp=timestamp,
-            message=message,
-            status=status
-        )
+        dict(route=route, method=method, timestamp=timestamp, message=message, status=status)
     )
     return resp
 
-
-
 @app.route('/api/errors', methods=["GET"])
 def get_error():
-    # message 搜索字段 page page_size
     message = request.args.to_dict().get("message", None)
+    new_errors = errors
     if message:
         new_errors = []
         for error in errors:
-            if message in error['message']:
-                new_errors.append(error)
-    else:
-        new_errors = errors
-    page = int(request.args.to_dict().get("page", 1))
-    page_size = int(request.args.to_dict().get("page_size", 10))
-    new_errors = sorted(new_errors, key=lambda x: x['timestamp'], reverse=True)
-    new_errors = new_errors[((page - 1) * page_size):]
-    if len(new_errors) <= page_size:
-        return jsonify(data=new_errors)
-    else:
-        return jsonify(data=new_errors[:page_size])
-
-
-
+            if message in error['message'] or message in error['route']: new_errors.append(error)
+    new_errors = sorted(new_errors, key=lambda x: x['timestamp'], reverse=True)  # timestamp sort
+    for line in new_errors: line['timestamp'] = int(line['timestamp'])
+    return jsonify(data=new_errors)
 
 if __name__ == '__main__':
     app.run(port=9501)

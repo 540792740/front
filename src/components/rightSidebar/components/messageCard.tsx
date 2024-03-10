@@ -12,7 +12,7 @@ const MessageCard = (props: MessageCardProps) => {
 
   const CollapseHeader = () => {
     return <div className='collapse-header-container' >
-      <div>{props.responseDetails.route}</div>
+      <div className='bold'>{props.responseDetails.route}</div>
       <div>
         {getTimeStamp(props.responseDetails.timestamp)}
       </div>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Drawer, Button, Timeline } from 'antd';
+import { Drawer, Button, Timeline, Input } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import './index.scss';
 import useStores from '@/hooks/useStores'
@@ -8,8 +8,10 @@ import { MessageListModel } from '@/stores/serviceMessageStore';
 import { apiUrl } from '@/apiUrl.js'
 import { useFetchWithState } from "@/components/FetchHook.jsx"
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
+import { observer } from 'mobx-react-lite';
+const { Search } = Input;
 let interval;
-export const RightSidebar = () => {
+const RightSidebar = () => {
   const [visible, setVisible] = useState<boolean>(false); // drawer visible
   const { ServiceMessageStore } = useStores()
   const { fetch, data } = useFetchWithState()
@@ -24,6 +26,10 @@ export const RightSidebar = () => {
     toggleDrawer()
   }
 
+  const onSearch = (e) => {
+    fetch(`${apiUrl}/errors?message=${e}`)
+  }
+
   // time line data
   const cardList = () => useMemo(() => {
     const tempList = [];
@@ -36,6 +42,15 @@ export const RightSidebar = () => {
     return tempList;
   }, [ServiceMessageStore.messageList])
 
+  const drawerTitleWithSearch = () => {
+    return <div>
+      <h3>Request History</h3>
+      <div>
+        <Search placeholder="input search text" onSearch={onSearch} enterButton />
+      </div>
+
+    </div>
+  }
   // 打开获取错误数据
   useEffect(() => {
     if (visible) {
@@ -44,9 +59,7 @@ export const RightSidebar = () => {
   }, [visible])
 
   useEffect(() => {
-    if (data && data.length > 0) {
-      ServiceMessageStore.setMessageList(data)
-    }
+    ServiceMessageStore.setMessageList(data || [])
   }, [data])
 
 
@@ -61,23 +74,17 @@ export const RightSidebar = () => {
         <LeftOutlined />
       </Button>
       <Drawer
-        title="Drawer"
         placement="right"
-        closable={false}
         onClose={onCloseHandler}
+        closable={false}
         open={visible}
-        mask={false}
+        title={drawerTitleWithSearch()}
         className='right-drawer-container'
       >
         <Timeline items={cardList()} />
-        <div className="menu">
-          {ServiceMessageStore.messageList.map(() => {
-            return 's'
-          })}
-        </div>
       </Drawer>
     </>
   );
 };
 
-export default RightSidebar;
+export default observer(RightSidebar)

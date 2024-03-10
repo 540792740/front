@@ -12,10 +12,7 @@ export interface MessageListModel {
 }
 class ServiceMessageStore {
 
-  private _messageList: MessageListModel[] = [
-    { message: 'new', route: '/text-test', status: 'succeeded', method: 'GET', timestamp: 2222 },
-    { message: 'error', route: '/text-test', status: 'failed', method: 'GET', timestamp: 2222 },
-  ]; // error message list
+  private _messageList: MessageListModel[] = []; // error message list
 
   constructor() {
     makeAutoObservable(this);

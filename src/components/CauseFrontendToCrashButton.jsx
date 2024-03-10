@@ -1,7 +1,8 @@
 import { useState } from "react"
 
 const CauseFrontendToCrashComponent = () => {
-   let a = 1
+    let a = 1
+    throw new Error('Crash!');
 }
 
 // Do not change this file
@@ -16,9 +17,9 @@ export const CauseFrontendToCrashButton = () => {
 
     return (
         <>
-        {/* Fix the crashing error using a component that is wrapped outside CauseFrontendToCrashButton component */}
-        <button onClick={handleClick}>FIXME: Cause frontend to crash button</button>
-        { buttonClicked && <CauseFrontendToCrashComponent /> }
+            {/* Fix the crashing error using a component that is wrapped outside CauseFrontendToCrashButton component */}
+            <button onClick={handleClick}>FIXME: Cause frontend to crash button</button>
+            {buttonClicked && <CauseFrontendToCrashComponent />}
         </>
     )
 }

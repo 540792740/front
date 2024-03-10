@@ -1,3 +1,4 @@
+import React from "react";
 import { CauseFrontendToCrashButton } from "./CauseFrontendToCrashButton"
 import { CORSErrorButton } from "./CORSErrorButton"
 import { EmptyJSONErrorButton } from "./EmptyJSONErrorButton"
@@ -9,6 +10,7 @@ import { FixServerErrorButton } from "./FixServerErrorButton"
 import { SuccessWithDelayButton } from "./SuccessWithDelayButton"
 import { SometimesFailedButton } from "./SometimesFailedButton"
 import RightSidebar from "./rightSidebar"
+import ErrorBoundary from "./errorBoundary/index.jsx";
 
 export const MainPage = () => {
 	return (
@@ -33,7 +35,9 @@ export const MainPage = () => {
 			<DataInput />
 			<FixServerErrorButton />
 			<br />
-			<CauseFrontendToCrashButton />
+			<ErrorBoundary >
+				<CauseFrontendToCrashButton />
+			</ErrorBoundary>
 		</div>
 	)
 }
